@@ -25,7 +25,7 @@ Copyright (C) 2024 Jamal Meizongo
 
 #ifndef _PIDF_H
 #define _PIDF_H
-#include <Arduino.h>
+#include <inttypes.h>
 
 class PIDF
 {
@@ -53,7 +53,6 @@ private:
     float Kd;
     float Kf;
     float IMax;
-    float currentError;
 
     /// Low pass filter cut frequency for derivative calculation.
     ///

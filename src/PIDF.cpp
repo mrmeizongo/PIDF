@@ -22,10 +22,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ===============================================
 */
+#include <Arduino.h>
 #include "PIDF.h"
 
-PIDF::PIDF()
-    : Kp(1), Ki{1}, Kd{1}, Kf{1}, IMax{100} {}
+PIDF::PIDF() {}
 
 PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax)
     : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax}
@@ -45,6 +45,7 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
 {
     unsigned long currentTime = millis();
     unsigned long dt = currentTime - previousTime;
+    float currentError = setPoint - currentPoint;
     float output = 0.0f;
     float deltaTime;
 
@@ -58,7 +59,6 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
         Reset();
     }
 
-    currentError = setPoint - currentPoint;
     deltaTime = (float)dt * 0.001f;
     // Save last time Compute was run
     previousTime = currentTime;
@@ -115,10 +115,7 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
 
     // Compute feedforward component if time has elapsed
     if ((fabsf(Kf) > 0) && (dt > 0))
-    {
-        float ff = setPoint * Kf;
-        output += ff;
-    }
+        output += setPoint * Kf;
 
     return static_cast<int16_t>(output);
 }
