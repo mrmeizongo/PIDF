@@ -6,7 +6,7 @@
 
 float Kp = 5.0f;
 float Ki = 0.2f;
-float Kd = 0.001f;
+float Kd = 0.01f;
 float Kf = 0.3f;
 float IMax = 100.0f;
 
@@ -26,7 +26,7 @@ void loop()
 {
     actual = map(analogRead(INPUT_PIN), 0, 1024, 0, 255);
 
-    output = myController->Compute(setPoint, actual);
+    output = myController.Compute(setPoint, actual);
     analogWrite(OUTPUT_PIN, output);
 
     Serial.print("Output is: ");
