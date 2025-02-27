@@ -25,8 +25,6 @@ SOFTWARE.
 #define FILTER_H
 #include <Arduino.h>
 
-#define SQRT2 1.4142135623730950488f // Hard coded value of sqrt(2) to save execution cycles
-
 class Filter
 {
 public:
@@ -69,7 +67,7 @@ public:
         float cosOmega = cos(omega);
 
         // Compute Butterworth coefficients
-        float alpha = sinOmega / SQRT2;
+        float alpha = sinOmega / M_SQRT2;
         float scale = 1.0f / (1.0f + alpha);
 
         b0 = (1.0f - cosOmega) / (2.0f * scale);
