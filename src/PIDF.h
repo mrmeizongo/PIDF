@@ -26,7 +26,7 @@ Copyright (C) 2024 Jamal Meizongo
 #ifndef _PIDF_H
 #define _PIDF_H
 #include <inttypes.h>
-#include "LowPassFilter.h"
+#include "../lib/LowpassFilter/src/LowpassFilter.h"
 
 class PIDF
 {
