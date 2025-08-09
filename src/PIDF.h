@@ -25,16 +25,16 @@ Copyright (C) 2024 Jamal Meizongo
 
 #ifndef _PIDF_H
 #define _PIDF_H
-#include <inttypes.h>
-#include "../lib/LowpassFilter/src/LowpassFilter.h"
+#include <Arduino.h>
+#include "../lib/LowPassFilter/src/LowPassFilter.h"
 
 class PIDF
 {
 public:
-    PIDF();                                  // Empty Constructor
-    PIDF(float, float, float, float, float); // Constructor with initialization parameters
-    void ResetI(void);                       // Reset PIDF integrator and derivative
-    int16_t Compute(float, float);           // Generate the PIDF output to be added to the servo
+    PIDF();                                    // Empty Constructor
+    PIDF(float, float, float, float, float);   // Constructor with initialization parameters
+    void resetPIDF(void) { previousTime = 0; } // Reset PIDF controller
+    int16_t Compute(float, float);             // Generate the PIDF output to be added to the servo
 
     float getKp(void) { return Kp; }
     float getKi(void) { return Ki; }
@@ -49,17 +49,20 @@ public:
     void setIMax(float _IMax) { IMax = _IMax; }
 
 private:
+    // Gains
     float Kp;
     float Ki;
     float Kd;
     float Kf;
     float IMax;
 
-    LowPassFilter derivative_lpf{20.0f, FilterType::SECOND_ORDER}; // Initialize low pass filter with a cutoff frequency of 20Hz
-                                                                   // using Butterworth second order filter
+    // First order low pass filter for derivative
+    LowPassFilter derivativeFilter{AUTO_LPF_CUTOFF_FREQUENCY, FilterType::SECOND_ORDER};
+    // First order low pass filter for proportional
+    LowPassFilter proportionalFilter{AUTO_LPF_CUTOFF_FREQUENCY, FilterType::SECOND_ORDER};
 
-    float integrator = 0;
-    float previousError = 0;
-    unsigned long previousTime = 0;
+    float integrator;
+    float previousError;
+    unsigned long previousTime;
 };
 #endif //_PIDF_H
