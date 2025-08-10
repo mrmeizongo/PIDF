@@ -27,7 +27,7 @@
 
 PIDF::PIDF() {}
 
-PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, float filterCutoffFrequency, FilterType filterType = FilterType::FIRST_ORDER)
+PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, uint16_t filterCutoffFrequency, FilterType filterType = FilterType::FIRST_ORDER)
     : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax}
 {
     integrator = 0;
