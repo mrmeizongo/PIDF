@@ -27,14 +27,14 @@
 
 PIDF::PIDF() {}
 
-PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, float filterCutoffFrequency)
+PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, float filterCutoffFrequency, FilterType filterType = FilterType::FIRST_ORDER)
     : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax}
 {
     integrator = 0;
     previousError = 0;
     previousTime = 0;
-    proportionalFilter = LowPassFilter(filterCutoffFrequency, FilterType::FIRST_ORDER);
-    derivativeFilter = LowPassFilter(filterCutoffFrequency, FilterType::FIRST_ORDER);
+    proportionalFilter = LowPassFilter(filterCutoffFrequency, filterType);
+    derivativeFilter = LowPassFilter(filterCutoffFrequency, filterType);
 }
 
 // Main function to be called to get PIDF control value
