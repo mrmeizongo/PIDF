@@ -56,10 +56,10 @@ private:
     float Kf;
     float IMax;
 
-    // First order low pass filter for derivative
-    LowPassFilter derivativeFilter{AUTO_LPF_CUTOFF_FREQUENCY, FilterType::SECOND_ORDER};
     // First order low pass filter for proportional
-    LowPassFilter proportionalFilter{AUTO_LPF_CUTOFF_FREQUENCY, FilterType::SECOND_ORDER};
+    LowPassFilter proportionalFilter;
+    // First order low pass filter for derivative
+    LowPassFilter derivativeFilter;
 
     float integrator;
     float previousError;

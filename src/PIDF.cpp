@@ -33,6 +33,8 @@ PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax)
     integrator = 0;
     previousError = 0;
     previousTime = 0;
+    proportionalFilter = LowPassFilter(AUTO_LPF_CUTOFF_FREQUENCY, FilterType::FIRST_ORDER);
+    derivativeFilter = LowPassFilter(AUTO_LPF_CUTOFF_FREQUENCY, FilterType::FIRST_ORDER);
 }
 
 // Main function to be called to get PIDF control value
