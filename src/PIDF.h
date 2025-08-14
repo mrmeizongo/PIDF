@@ -57,9 +57,9 @@ private:
     float IMax;
 
     // First order low pass filter for proportional
-    LowPassFilter<float, SecondOrderLPF<float>> proportionalFilter;
+    LowPassFilter<float, SecondOrderLPF> proportionalFilter;
     // First order low pass filter for derivative
-    LowPassFilter<float, SecondOrderLPF<float>> derivativeFilter;
+    LowPassFilter<float, SecondOrderLPF> derivativeFilter;
 
     float integrator;
     float previousError;
