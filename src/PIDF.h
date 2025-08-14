@@ -31,10 +31,10 @@ Copyright (C) 2024 Jamal Meizongo
 class PIDF
 {
 public:
-    PIDF();                                                        // Empty Constructor
-    PIDF(float, float, float, float, float, uint16_t, FilterType); // Constructor with initialization parameters
-    void resetPIDF(void) { previousTime = 0; }                     // Reset PIDF controller
-    int16_t Compute(float, float);                                 // Generate the PIDF output to be added to the servo
+    PIDF();                                            // Empty Constructor
+    PIDF(float, float, float, float, float, uint16_t); // Constructor with initialization parameters
+    void resetPIDF(void) { previousTime = 0; }         // Reset PIDF controller
+    int16_t Compute(float, float);                     // Generate the PIDF output to be added to the servo
 
     float getKp(void) { return Kp; }
     float getKi(void) { return Ki; }
