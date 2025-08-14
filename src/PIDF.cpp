@@ -55,6 +55,8 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
     {
         dt = 0;
         integrator = 0;
+        proportionalFilter.Reset();
+        derivativeFilter.Reset();
     }
 
     deltaTime = (float)dt * 0.001f;
