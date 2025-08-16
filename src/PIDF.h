@@ -56,8 +56,8 @@ private:
     float Kf;
     float IMax;
 
-    // First order low pass filter for proportional
-    FirstOrderLPF<float> proportionalFilter;
+    // First order low pass filter for measured current point
+    FirstOrderLPF<float> currentPointFilter;
     // First order low pass filter for derivative
     FirstOrderLPF<float> derivativeFilter;
 

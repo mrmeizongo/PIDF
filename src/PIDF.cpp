@@ -31,7 +31,7 @@ PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, uint16_t _fi
     : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax},
       integrator{0.f}, previousError{0.f}, previousTime{0}
 {
-    proportionalFilter = FirstOrderLPF<float>(_filterCutoffFrequency);
+    currentPointFilter = FirstOrderLPF<float>(_filterCutoffFrequency);
     derivativeFilter = FirstOrderLPF<float>(_filterCutoffFrequency);
 }
 
@@ -40,7 +40,6 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
 {
     unsigned long currentTime = millis();
     unsigned long dt = currentTime - previousTime;
-    float currentError = setPoint - currentPoint;
     float output = 0.0f;
     float deltaTime;
 
@@ -57,13 +56,13 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
         derivativeFilter.Reset();
     }
 
-    deltaTime = (float)dt * 0.001f;
-    // Save last time Compute was run
     previousTime = currentTime;
+    deltaTime = (float)dt * 0.001f;
+
     // Compute proportional component
-    float proportional = currentError * Kp;
-    proportional = proportionalFilter.Process(proportional, deltaTime);
-    output += proportional;
+    currentPoint = currentPointFilter.Process(currentPoint, deltaTime);
+    float currentError = setPoint - currentPoint;
+    output += currentError * Kp;
 
     // Compute integral component if time has elapsed
     if ((fabsf(Ki) > 0) && (dt > 0))
