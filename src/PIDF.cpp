@@ -29,7 +29,7 @@ PIDF::PIDF() {}
 
 PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, uint16_t _filterCutoffFrequency)
     : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax},
-      integrator{0.f}, previousError{0.f}, previousTime{0.f}
+      integrator{0.f}, previousError{0.f}, previousTime{0}
 {
     proportionalFilter = FirstOrderLPF<float>(filterCutoffFrequency);
     derivativeFilter = FirstOrderLPF<float>(filterCutoffFrequency);
