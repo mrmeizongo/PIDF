@@ -52,7 +52,7 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
     {
         dt = 0.f;
         integrator = 0.f;
-        proportionalFilter.Reset();
+        currentPointFilter.Reset();
         derivativeFilter.Reset();
     }
 
