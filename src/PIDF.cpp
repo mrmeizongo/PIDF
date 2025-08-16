@@ -27,12 +27,10 @@
 
 PIDF::PIDF() {}
 
-PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, uint16_t filterCutoffFrequency)
-    : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax}
+PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, uint16_t _filterCutoffFrequency)
+    : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax},
+      integrator{0.f}, previousError{0.f}, previousTime{0.f}
 {
-    integrator = 0;
-    previousError = 0;
-    previousTime = 0;
     proportionalFilter = FirstOrderLPF<float>(filterCutoffFrequency);
     derivativeFilter = FirstOrderLPF<float>(filterCutoffFrequency);
 }
@@ -53,8 +51,8 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
      */
     if (previousTime == 0 || dt > 1000)
     {
-        dt = 0;
-        integrator = 0;
+        dt = 0.f;
+        integrator = 0.f;
         proportionalFilter.Reset();
         derivativeFilter.Reset();
     }
