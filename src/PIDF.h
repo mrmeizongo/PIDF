@@ -33,7 +33,7 @@ class PIDF
 public:
     PIDF();                                            // Empty Constructor
     PIDF(float, float, float, float, float, uint16_t); // Constructor with initialization parameters
-    void resetPIDF(void) { previousTime = 0; }         // Reset PIDF controller
+    void reset(void) { previousTime = 0; }         // Reset PIDF controller
     int16_t Compute(float, float);                     // Generate the PIDF output to be added to the servo
 
     float getKp(void) { return Kp; }

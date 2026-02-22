@@ -11,7 +11,7 @@ float Kd = 0.01f;
 float Kf = 0.3f;
 float IMax = 100.0f;
 
-PID myController{Kp, Ki, Kd, Kf, iMax, PID_LPF_FREQ}; // Constructor with gain values set
+PIDF myController{Kp, Ki, Kd, Kf, IMax, PID_LPF_FREQ}; // Constructor with gain values set
 
 float setPoint = 72;
 float actual = 0;
