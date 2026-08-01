@@ -67,14 +67,7 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
     {
         integrator += (currentError * Ki) * deltaTime;
         // Limit integrator wind up
-        if (integrator < -IMax)
-        {
-            integrator = -IMax;
-        }
-        else if (integrator > IMax)
-        {
-            integrator = IMax;
-        }
+        integrator = constrain(integrator, -IMax, IMax);
         output += integrator;
     }
 
