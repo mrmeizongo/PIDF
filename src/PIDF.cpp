@@ -27,12 +27,12 @@
 
 PIDF::PIDF() {}
 
-PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, uint16_t _filterCutoffFrequency)
-    : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax},
+PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, float _deltaTime, uint16_t _filterCutoffFrequency)
+    : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax}, deltaTime{_deltaTime},
       integrator{0.f}, previousError{0.f}, previousTime{0}
 {
-    currentPointFilter = FirstOrderLPF<float>(_filterCutoffFrequency);
-    derivativeFilter = FirstOrderLPF<float>(_filterCutoffFrequency);
+    currentPointFilter = FirstOrderLPF<float>(_filterCutoffFrequency, deltaTime);
+    derivativeFilter = FirstOrderLPF<float>(_filterCutoffFrequency, deltaTime);
 }
 
 // Main function to be called to get PIDF control value
@@ -41,7 +41,6 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
     unsigned long currentTime = millis();
     unsigned long dt = currentTime - previousTime;
     float output = 0.0f;
-    float deltaTime;
 
     /*
      * If this PIDF just started or hasn't been used for a full second then reset the PIDF.
@@ -50,17 +49,16 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
      */
     if (previousTime == 0 || dt > 1000)
     {
-        dt = 0.f;
+        dt = 0;
         integrator = 0.f;
         currentPointFilter.Reset();
         derivativeFilter.Reset();
     }
 
     previousTime = currentTime;
-    deltaTime = (float)dt * 0.001f;
 
     // Compute proportional component
-    currentPoint = currentPointFilter.Process(currentPoint, deltaTime);
+    currentPoint = currentPointFilter.Process(currentPoint);
     float currentError = setPoint - currentPoint;
     output += currentError * Kp;
 
@@ -86,7 +84,7 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
         // Calculate new derivative
         float derivative = (currentError - previousError) / deltaTime;
         // Apply low pass filter to eliminate high frequency noise in the derivative term
-        derivative = derivativeFilter.Process(derivative, deltaTime);
+        derivative = derivativeFilter.Process(derivative);
         // Update state
         previousError = currentError;
         // Add in derivative component
