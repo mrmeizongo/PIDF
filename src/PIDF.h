@@ -59,9 +59,9 @@ private:
     float deltaTime;
 
     // First order low pass filter for measured current point
-    FirstOrderLPF<float> currentPointFilter;
+    SecondOrderLPF<float> currentPointFilter;
     // First order low pass filter for derivative
-    FirstOrderLPF<float> derivativeFilter;
+    SecondOrderLPF<float> derivativeFilter;
 
     float integrator;
     float previousError;
