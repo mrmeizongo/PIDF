@@ -30,8 +30,8 @@ PIDF::PIDF() {}
 PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, float _deltaTime, uint16_t _filterCutoffFrequency)
     : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax}, deltaTime{_deltaTime},
       integrator{0.f}, previousError{0.f}, previousTime{0},
-      currentPointFilter(SecondOrderLPF<float>(_filterCutoffFrequency, deltaTime)),
-      derivativeFilter(SecondOrderLPF<float>(_filterCutoffFrequency, deltaTime))
+      currentPointFilter(FirstOrderLPF<float>(_filterCutoffFrequency, deltaTime)),
+      derivativeFilter(FirstOrderLPF<float>(_filterCutoffFrequency, deltaTime))
 {
 }
 

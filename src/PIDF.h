@@ -63,8 +63,8 @@ private:
     unsigned long previousTime;
 
     // First order low pass filter for measured current point
-    SecondOrderLPF<float> currentPointFilter;
+    FirstOrderLPF<float> currentPointFilter;
     // First order low pass filter for derivative
-    SecondOrderLPF<float> derivativeFilter;
+    FirstOrderLPF<float> derivativeFilter;
 };
 #endif //_PIDF_H
