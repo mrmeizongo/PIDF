@@ -58,13 +58,13 @@ private:
 
     float deltaTime;
 
+    float integrator;
+    float previousError;
+    unsigned long previousTime;
+
     // First order low pass filter for measured current point
     SecondOrderLPF<float> currentPointFilter;
     // First order low pass filter for derivative
     SecondOrderLPF<float> derivativeFilter;
-
-    float integrator;
-    float previousError;
-    unsigned long previousTime;
 };
 #endif //_PIDF_H
