@@ -32,10 +32,71 @@ template <typename T>
 class PIDF
 {
 public:
-    PIDF();                                               // Empty Constructor
-    PIDF(float, float, float, float, T, float, uint16_t); // Constructor with initialization parameters
-    void reset(void) { previousTime = 0; }                // Reset PIDF controller
-    T Compute(T, T);                                      // Generate the PIDF output to be added to the servo
+    PIDF(float _Kp, float _Ki, float _Kd, float _Kf, T _IMax, float _deltaTime, uint16_t _filterCutoffFrequency)
+        : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax}, deltaTime{_deltaTime},
+          integrator{0.f}, previousError{0.f}, previousTime{0},
+          currentPointFilter(FirstOrderLPF<float>(_filterCutoffFrequency, deltaTime)),
+          derivativeFilter(FirstOrderLPF<float>(_filterCutoffFrequency, deltaTime))
+    {
+    }
+
+    void reset(void) { previousTime = 0; } // Reset PIDF controller
+
+    T Compute(T setPoint, T currentPoint)
+    {
+        uint32_t currentTime = millis();
+        uint32_t dt = currentTime - previousTime;
+        T output = T{};
+
+        /*
+         * If this PIDF just started or hasn't been used for a full second then reset the PIDF.
+         * If it hasn't been used for a full second, it prevents I buildup from a previous fight mode
+         * from causing a massive return before the integrator gets a chance to correct itself
+         */
+        if (previousTime == 0 || dt > 1000)
+        {
+            dt = 0;
+            integrator = 0.f;
+            previousTime = currentTime;
+            currentPointFilter.Reset();
+            derivativeFilter.Reset();
+        }
+
+        previousTime = currentTime;
+
+        // Compute proportional component
+        currentPoint = currentPointFilter.Process(currentPoint);
+        T currentError = setPoint - currentPoint;
+        output += currentError * Kp;
+
+        // Compute integral component if time has elapsed
+        if ((fabsf(Ki) > 0) && (dt > 0))
+        {
+            integrator += (currentError * Ki) * deltaTime;
+            // Limit integrator wind up
+            integrator = constrain(integrator, -IMax, IMax);
+            output += integrator;
+        }
+
+        // Compute derivative component if time has elapsed
+        if ((fabsf(Kd) > 0) && (dt > 0))
+        {
+            // Calculate new derivative
+            float derivative = (currentError - previousError) / deltaTime;
+            // Apply low pass filter to eliminate high frequency noise in the derivative term
+            derivative = derivativeFilter.Process(derivative);
+            // Update state
+            previousError = currentError;
+            // Add in derivative component
+            output += derivative * Kd;
+        }
+
+        // Compute feedforward component if time has elapsed
+        if ((fabsf(Kf) > 0) && (dt > 0))
+            output += setPoint * Kf;
+
+        return output;
+    }
 
     float getKp(void) { return Kp; }
     float getKi(void) { return Ki; }
