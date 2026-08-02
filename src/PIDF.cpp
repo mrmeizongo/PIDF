@@ -39,7 +39,7 @@ PIDF<T>::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, T _IMax, float _deltaT
 
 // Main function to be called to get PIDF control value
 template <typename T>
-T PIDF::Compute(T setPoint, T currentPoint)
+T PIDF<T>::Compute(T setPoint, T currentPoint)
 {
     uint32_t currentTime = millis();
     uint32_t dt = currentTime - previousTime;
