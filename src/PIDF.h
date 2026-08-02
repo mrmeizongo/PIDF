@@ -32,7 +32,7 @@ template <typename T>
 class PIDF
 {
 public:
-    PIDF(float _Kp, float _Ki, float _Kd, float _Kf, T _IMax, float _deltaTime, uint16_t _filterCutoffFrequency)
+    PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, float _deltaTime, uint16_t _filterCutoffFrequency)
         : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax}, deltaTime{_deltaTime},
           integrator{0.f}, previousError{0.f}, previousTime{0},
           currentPointFilter(FirstOrderLPF<float>(_filterCutoffFrequency, deltaTime)),
@@ -102,7 +102,7 @@ public:
     float getKi(void) { return Ki; }
     float getKd(void) { return Kd; }
     float getKf(void) { return Kf; }
-    T getIMax(void) { return IMax; }
+    float getIMax(void) { return IMax; }
 
     void setKp(float _Kp) { Kp = _Kp; }
     void setKi(float _Ki) { Ki = _Ki; }
@@ -116,13 +116,13 @@ private:
     float Ki;
     float Kd;
     float Kf;
-    T IMax;
+    float IMax;
 
     float deltaTime;
 
     float integrator;
     float previousError;
-    unsigned long previousTime;
+    uint32_t previousTime;
 
     // First order low pass filter for measured current point
     FirstOrderLPF<float> currentPointFilter;
