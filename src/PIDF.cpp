@@ -27,7 +27,8 @@
 
 PIDF::PIDF() {}
 
-PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, float _deltaTime, uint16_t _filterCutoffFrequency)
+template <typename T>
+PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, T _IMax, float _deltaTime, uint16_t _filterCutoffFrequency)
     : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax}, deltaTime{_deltaTime},
       integrator{0.f}, previousError{0.f}, previousTime{0},
       currentPointFilter(FirstOrderLPF<float>(_filterCutoffFrequency, deltaTime)),
@@ -36,11 +37,12 @@ PIDF::PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, float _delta
 }
 
 // Main function to be called to get PIDF control value
-int16_t PIDF::Compute(float setPoint, float currentPoint)
+template <typename T>
+T PIDF::Compute(T setPoint, T currentPoint)
 {
-    unsigned long currentTime = millis();
-    unsigned long dt = currentTime - previousTime;
-    float output = 0.0f;
+    uint32_t currentTime = millis();
+    uint32_t dt = currentTime - previousTime;
+    T output = T{};
 
     /*
      * If this PIDF just started or hasn't been used for a full second then reset the PIDF.
@@ -60,7 +62,7 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
 
     // Compute proportional component
     currentPoint = currentPointFilter.Process(currentPoint);
-    float currentError = setPoint - currentPoint;
+    T currentError = setPoint - currentPoint;
     output += currentError * Kp;
 
     // Compute integral component if time has elapsed
@@ -89,5 +91,5 @@ int16_t PIDF::Compute(float setPoint, float currentPoint)
     if ((fabsf(Kf) > 0) && (dt > 0))
         output += setPoint * Kf;
 
-    return static_cast<int16_t>(output);
+    return output;
 }

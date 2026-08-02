@@ -28,19 +28,20 @@ Copyright (C) 2024 Jamal Meizongo
 #include <Arduino.h>
 #include "../lib/LowPassFilter/src/LowPassFilter.h"
 
+template <typename T>
 class PIDF
 {
 public:
-    PIDF();                                                   // Empty Constructor
-    PIDF(float, float, float, float, float, float, uint16_t); // Constructor with initialization parameters
-    void reset(void) { previousTime = 0; }                    // Reset PIDF controller
-    int16_t Compute(float, float);                            // Generate the PIDF output to be added to the servo
+    PIDF();                                               // Empty Constructor
+    PIDF(float, float, float, float, T, float, uint16_t); // Constructor with initialization parameters
+    void reset(void) { previousTime = 0; }                // Reset PIDF controller
+    T Compute(T, T);                                      // Generate the PIDF output to be added to the servo
 
     float getKp(void) { return Kp; }
     float getKi(void) { return Ki; }
     float getKd(void) { return Kd; }
     float getKf(void) { return Kf; }
-    float getIMax(void) { return IMax; }
+    T getIMax(void) { return IMax; }
 
     void setKp(float _Kp) { Kp = _Kp; }
     void setKi(float _Ki) { Ki = _Ki; }
@@ -54,7 +55,7 @@ private:
     float Ki;
     float Kd;
     float Kf;
-    float IMax;
+    T IMax;
 
     float deltaTime;
 
