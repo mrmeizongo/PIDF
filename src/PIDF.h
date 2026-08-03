@@ -65,7 +65,7 @@ public:
         previousTime = currentTime;
 
         // Compute proportional component
-        currentPoint = currentPointFilter.Process(currentPoint);
+        // currentPoint = currentPointFilter.Process(currentPoint);
         T currentError = setPoint - currentPoint;
         output += currentError * Kp;
 
@@ -84,7 +84,7 @@ public:
             // Calculate new derivative
             float derivative = (currentError - previousError) / deltaTime;
             // Apply low pass filter to eliminate high frequency noise in the derivative term
-            derivative = derivativeFilter.Process(derivative);
+            // derivative = derivativeFilter.Process(derivative);
             // Update state
             previousError = currentError;
             // Add in derivative component
