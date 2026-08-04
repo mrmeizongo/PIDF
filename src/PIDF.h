@@ -35,8 +35,8 @@ public:
     PIDF(float _Kp, float _Ki, float _Kd, float _Kf, float _IMax, float _deltaTime, uint16_t _filterCutoffFrequency)
         : Kp{_Kp}, Ki{_Ki}, Kd{_Kd}, Kf{_Kf}, IMax{_IMax}, deltaTime{_deltaTime},
           integrator{0.f}, previousError{0.f}, previousTime{0},
-          currentPointFilter{FirstOrderLPF<float>(_filterCutoffFrequency, deltaTime)},
-          derivativeFilter{FirstOrderLPF<float>(_filterCutoffFrequency, deltaTime)}
+          currentPointFilter{SecondOrderLPF<float>(_filterCutoffFrequency, deltaTime)},
+          derivativeFilter{SecondOrderLPF<float>(_filterCutoffFrequency, deltaTime)}
     {
     }
 
@@ -49,15 +49,14 @@ public:
         T output = T{};
 
         /*
-         * If this PIDF just started or hasn't been used for a full second then reset the PIDF.
-         * If it hasn't been used for a full second, it prevents I buildup from a previous fight mode
+         * If this PIDF just started, reset or hasn't been used for two seconds then reset the PIDF.
+         * It prevents I buildup from a previous fight mode
          * from causing a massive return before the integrator gets a chance to correct itself
          */
-        if (previousTime == 0 || dt > 1000)
+        if (previousTime == 0 || dt > 2000)
         {
             dt = 0;
             integrator = 0.f;
-            previousTime = currentTime;
             currentPointFilter.Reset();
             derivativeFilter.Reset();
         }
@@ -125,8 +124,8 @@ private:
     uint32_t previousTime;
 
     // First order low pass filter for measured current point
-    FirstOrderLPF<float> currentPointFilter;
+    SecondOrderLPF<float> currentPointFilter;
     // First order low pass filter for derivative
-    FirstOrderLPF<float> derivativeFilter;
+    SecondOrderLPF<float> derivativeFilter;
 };
 #endif //_PIDF_H
